@@ -177,7 +177,7 @@ fn main() {
         cargo_path.push("Cargo.toml");
         let mut cargo_tmp = src.clone();
         cargo_tmp.push(".Cargo.tmp");
-        if let Err(e) = copy_deps(file_src, cargo_path, cargo_tmp) {
+        if let Err(e) = copy_deps(file_src, cargo_path, cargo_tmp, dependencies) {
             fatal_exit(&format!(
                 "cargo-single: error refreshing dependencies: {}",
                 e
