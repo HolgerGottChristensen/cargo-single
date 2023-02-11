@@ -200,17 +200,15 @@ fn main() {
         first_args.push(toolchain);
     }
 
-    println!("Running cargo with");
-    println!("First args: {:?}", first_args);
-    println!("Cargo args: {:?}", cargo_args);
-    println!("Rest: {:?}", rest);
-
     first_args.push(&cmd);
-    match Command::new("cargo")
+    let command = Command::new("cargo")
         .args(first_args)
         .args(&cargo_args)
         .arg("--")
-        .args(&rest)
+        .args(&rest);
+
+    println!("Running: {:?}", command);
+    match command
         .status()
     {
         Err(e) => fatal_exit(&format!(
