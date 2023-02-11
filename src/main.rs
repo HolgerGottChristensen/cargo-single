@@ -199,6 +199,12 @@ fn main() {
     if let Some(toolchain) = cargo_toolchain.as_ref() {
         first_args.push(toolchain);
     }
+
+    println!("Running cargo with");
+    println!("First args: {:?}", first_args);
+    println!("Cargo args: {:?}", cargo_args);
+    println!("Rest: {:?}", rest);
+
     first_args.push(&cmd);
     match Command::new("cargo")
         .args(first_args)
