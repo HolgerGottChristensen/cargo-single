@@ -18,6 +18,7 @@ const USAGE: &str = r#"Usage:
     --release                   Build/check in release mode.
     --target <target>           Use the specified target for building.
     --no-quiet                  Don't pass --quiet to Cargo.
+    --no-dependencies
 
 "fmt" will accept and forward all options to the real Cargo, even those which make
 no sense for the subcommand."#;
@@ -51,10 +52,12 @@ fn main() {
     let mut cargo_args_seen = HashSet::new();
     let mut rest = vec![];
     let mut is_quiet = true;
+    let mut dependencies = true;
     let mut cargo_toolchain = None;
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--no-quiet" => is_quiet = false,
+            "--no-dependencies" => dependencies = false,
             "--release" => {
                 if cargo_args_seen.contains(&CargoOpts::Release) {
                     fatal_exit("cargo-single: --release already seen");
@@ -217,6 +220,7 @@ fn copy_deps(
     file_src: PathBuf,
     cargo_path: PathBuf,
     cargo_tmp: PathBuf,
+    parse_dependencies: bool,
 ) -> Result<(), Box<dyn Error>> {
     let src = File::open(&file_src)?;
     let src = BufReader::new(src);
@@ -228,6 +232,9 @@ fn copy_deps(
     let mut self_version = None;
     for src_line in src.lines() {
         let src_line = src_line?;
+        if !parse_dependencies {
+            break;
+        }
         if !src_line.starts_with("// ") {
             break;
         }
