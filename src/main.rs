@@ -201,14 +201,18 @@ fn main() {
     }
 
     first_args.push(&cmd);
-    let command = Command::new("cargo")
+
+    println!("Running: {:?}", Command::new("cargo")
+        .args(&first_args)
+        .args(&cargo_args)
+        .arg("--")
+        .args(&rest));
+
+    match Command::new("cargo")
         .args(first_args)
         .args(&cargo_args)
         .arg("--")
-        .args(&rest);
-
-    println!("Running: {:?}", command);
-    match command
+        .args(&rest)
         .status()
     {
         Err(e) => fatal_exit(&format!(
